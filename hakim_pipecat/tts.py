@@ -119,9 +119,27 @@ class HakimTTSService(InterruptibleTTSService):
 
     @property
     def provider(self) -> str:
+        """Get the name of the TTS provider.
+
+        Returns:
+            The provider name, `"Hakim"`.
+        """
         return "Hakim"
 
+    def can_generate_metrics(self) -> bool:
+        """Check if this service can generate processing metrics.
+
+        Returns:
+            True, as this service supports metrics.
+        """
+        return True
+
     async def start(self, frame: StartFrame) -> None:
+        """Start the service and connect the websocket.
+
+        Args:
+            frame: The start frame that triggers service initialization.
+        """
         await super().start(frame)
         await self._connect()
 
@@ -236,6 +254,14 @@ class HakimTTSService(InterruptibleTTSService):
         background receive loop (`_receive_messages`), not from this
         generator — the base class's `push_start_frame=False` default means
         `run_tts` owns opening the audio context here.
+
+        Args:
+            text: The text to synthesize into speech.
+            context_id: Unique identifier for this synthesis context.
+
+        Returns:
+            An async generator that yields no frames directly; audio and
+            terminal frames are pushed from the background receive loop.
         """
         try:
             if not self._websocket or self._websocket.state is State.CLOSED:

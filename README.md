@@ -3,6 +3,11 @@
 STT and TTS services that let a [Pipecat](https://docs.pipecat.ai/) voice agent use Hakim for
 realtime Arabic-first speech-to-text and text-to-speech.
 
+**Maintained by Hakim** — we're the team behind [Hakim](https://tryhakim.ai) and built this
+integration ourselves, so it's actively maintained alongside the API it talks to.
+
+**Tested with Pipecat v1.5.0.**
+
 **This integration talks directly to Hakim's public REST/WebSocket API** — the same one at
 `https://tryhakim.ai/docs`. It does not depend on the `hakim` Python package; that SDK is not
 published yet, so this code speaks the wire protocol itself over the `websockets` library Pipecat

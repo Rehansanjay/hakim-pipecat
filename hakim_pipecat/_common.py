@@ -21,6 +21,14 @@ _REGION_HOSTS: dict[str, str] = {
 
 
 def resolve_api_key(explicit: str | None) -> str:
+    """Resolve the Hakim API key from an explicit value or the environment.
+
+    Args:
+        explicit: An API key passed directly by the caller, if any.
+
+    Returns:
+        The resolved API key.
+    """
     key = explicit or os.environ.get("HAKIM_API_KEY")
     if not key:
         raise ValueError(
@@ -37,6 +45,14 @@ def resolve_ws_url(path: str, *, region: Region = "auto", base_url: str | None =
     `base_url` (if given) wins outright — it's how staging/self-hosted
     deployments override the default region hosts. Otherwise the region
     code maps to one of Hakim's published regional endpoints.
+
+    Args:
+        path: The WebSocket path to append (e.g. `/v1/audio/speech/stream`).
+        region: Which regional endpoint to target.
+        base_url: Overrides the region table entirely.
+
+    Returns:
+        The full `wss://` URL.
     """
     if base_url:
         host = (

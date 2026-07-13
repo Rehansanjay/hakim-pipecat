@@ -148,10 +148,27 @@ class HakimSTTService(WebsocketSTTService):
 
     @property
     def provider(self) -> str:
+        """Get the name of the STT provider.
+
+        Returns:
+            The provider name, `"Hakim"`.
+        """
         return "Hakim"
 
+    def can_generate_metrics(self) -> bool:
+        """Check if this service can generate processing metrics.
+
+        Returns:
+            True, as this service supports metrics.
+        """
+        return True
+
     async def start(self, frame: StartFrame) -> None:
-        """Start the service and connect the websocket."""
+        """Start the service and connect the websocket.
+
+        Args:
+            frame: The start frame that triggers service initialization.
+        """
         await super().start(frame)
         await self._connect()
 
@@ -161,6 +178,13 @@ class HakimSTTService(WebsocketSTTService):
         Results arrive asynchronously via the receive loop (`_handle_message`),
         not from this generator — matches how other continuous-streaming STT
         plugins in this framework (e.g. AssemblyAI, Deepgram) are structured.
+
+        Args:
+            audio: Raw PCM audio bytes to transcribe.
+
+        Returns:
+            An async generator that yields no frames directly; results are
+            pushed from the background receive loop instead.
         """
         self._audio_buffer.extend(audio)
 
@@ -184,7 +208,12 @@ class HakimSTTService(WebsocketSTTService):
         yield None
 
     async def process_frame(self, frame: Frame, direction: FrameDirection) -> None:
-        """Send `input_audio_buffer.commit` when Pipecat's VAD says the turn ended."""
+        """Send `input_audio_buffer.commit` when Pipecat's VAD says the turn ended.
+
+        Args:
+            frame: The frame to process.
+            direction: The direction the frame is travelling in the pipeline.
+        """
         await super().process_frame(frame, direction)
 
         if isinstance(frame, VADUserStoppedSpeakingFrame):
