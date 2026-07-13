@@ -1,0 +1,6 @@
+# Third-party framework only — no `hakim` dependency. That SDK isn't
+# published yet, so this integration speaks Hakim's public WebSocket API
+# directly (see hakim_pipecat/_common.py).
+pipecat-ai>=0.0.105
+websockets>=12.0
+python-dotenv>=1.0
